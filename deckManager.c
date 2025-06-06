@@ -151,4 +151,15 @@ Card *pickLast(Card **baralho) {
     return current;
 }
 
+void insertLest(Card **baralho, Card *nCard) {
 
+    Card *card = *baralho;
+    
+    while (card->next != NULL) {
+        card = card->next;
+    }
+
+    card->next = nCard;
+    nCard->prev = card;
+    
+}

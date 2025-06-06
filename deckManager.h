@@ -26,4 +26,5 @@ Card *createDeck ();
 void showCard(Card *card);
 void showDeck (Card *baralho);
 Card *pickById(Card *baralho, int id);
-Card *pickLast(Card *baralho);
+Card *pickLast(Card **baralho);
+void insertLest(Card **baralho, Card *nCard);
