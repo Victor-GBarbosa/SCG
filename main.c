@@ -15,20 +15,17 @@ int main () {
 
     baralho = createDeck();
 
-    // showDeck(baralho);
 
-    int id = 50;
+    // showCard(pickById(baralho, id)); // testar novamente
 
-    showDeck(baralho);
+    //-------Teste getSize
 
-    printf("-------Carta selecionada-------\n\n");
-
-    // showCard(pickById(baralho, id));
-    showCard(pickLast(&baralho)); //Rei de ouros
-
-    insertLest(&baralho, curinga);
+    shuffle(&baralho);
+    idRegulator(&baralho);
 
     showDeck(baralho);
+
+    printf("%i", getSize(baralho));
 
     return 0;
 }

@@ -114,9 +114,9 @@ void showDeck (Card *baralho) {
     }
 }
 
-Card *pickById(Card *baralho, int id) {
+Card *pickById(Card **baralho, int id) {
 
-    Card *card = baralho;
+    Card *card = *baralho;
 
     while (card->id != id) {
         card = card->next;
@@ -162,4 +162,68 @@ void insertLest(Card **baralho, Card *nCard) {
     card->next = nCard;
     nCard->prev = card;
     
+}
+
+int getSize (Card *baralho) {
+    int index = 0;
+
+    while (baralho != NULL) {
+        baralho = baralho->next;
+        index++;
+    }
+
+    return index;
+    
+}
+
+void idRegulator(Card **baralho) {
+    int index = 0;
+    Card *current = *baralho;
+
+    while (current != NULL) {
+        current->id = index;
+        current = current->next;
+        index++;
+    }
+}
+
+void shuffle (Card **baralho_ptr) {
+
+    if (baralho_ptr == NULL || *baralho_ptr == NULL) {
+        return;
+    }
+
+    Card *baralho = malloc(sizeof(Card));
+    baralho = *baralho_ptr;
+
+    int size = getSize(baralho);
+
+    Card *temp[size];
+    Card *current = baralho;
+
+    for (int i = 0; i < size; i++) { // passando o baralho para um vetor
+        temp[i] = current;
+        current = current->next;
+    }
+
+    for (int i = size - 1; i > 0; i--) {
+        int j = rand() % (i + 1);
+        Card *swap = temp[i];
+        temp[i] = temp[j];
+        temp[j] = swap;
+    }
+
+        for (int i = 0; i < size; i++) {
+        if (i == 0) {
+            temp[i]->prev = NULL;
+            *baralho_ptr = temp[i];
+        } else {
+            temp[i]->prev = temp[i-1];
+            temp[i-1]->next = temp[i];
+        }
+        
+        if (i == size - 1) {
+            temp[i]->next = NULL;
+        }
+        }
 }
