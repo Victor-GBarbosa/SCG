@@ -1,5 +1,9 @@
+#ifndef DECKMANAGER_H
+#define DECKMANAGER_H
+
 #include "deckManager.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 Card *createDeck () {
     Card *head = NULL;
@@ -227,3 +231,6 @@ void shuffle (Card **baralho_ptr) {
         }
         }
 }
+
+
+#endif

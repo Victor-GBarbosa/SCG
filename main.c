@@ -1,32 +1,21 @@
 #include <stdio.h>
-#include "deckManager.h"
+#include <stdlib.h>
+#include "gameFeatures.h"
 
 int main () {
 
     Card *baralho = NULL;
 
-    Card *curinga = malloc(sizeof(Card));
-    
-    curinga->id = 69;
-    curinga->rank = 13;
-    curinga->naipe = 2;
-    curinga->next = NULL;
-
-
     baralho = createDeck();
-
-
-    // showCard(pickById(baralho, id)); // testar novamente
-
-    //-------Teste getSize
-
     shuffle(&baralho);
-    idRegulator(&baralho);
 
-    showDeck(baralho);
+    int handSize = 8;
 
-    printf("%i", getSize(baralho));
+    Card *pHand[handSize];
 
-    return 0;
+    for (int i = 0; i < 8; i++) {
+        pHand[i] = pickLast(&baralho);
+    }
+
+    screen(pHand, handSize);
 }
-

@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "deckmanager.h": "c",
+    "stdio.h": "c"
+  }
+}
