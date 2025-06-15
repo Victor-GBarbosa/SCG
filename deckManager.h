@@ -8,6 +8,19 @@ enum Naipe {
     OUROS
 } Naipe;
 
+typedef enum{
+    HIGH_CARD,
+    PAIR,
+    TWO_PAIR,
+    TRIPLE,
+    THREE_OF_A_KIND,
+    STRAIGHT,
+    FLUSH,
+    FULL_HOUSE,
+    FOUR_OF_A_KIND,
+    STRAIGHT_FLUSH
+} HandRank;
+
 enum Stamp {
     NONE = 0
 } Stamp;
@@ -24,7 +37,9 @@ typedef struct Card{
 
 Card *createDeck ();
 void showCard(Card *card);
+void debugCard(Card *card);
 void showDeck (Card *baralho);
+void showDeckAll (Card *baralho);
 Card *pickById(Card **baralho, int id);
 Card *pickLast(Card **baralho);
 void insertLest(Card **baralho, Card *nCard);

@@ -89,7 +89,20 @@ void showCard(Card *card) {
        printf(" id: %i", card->id);
 }
 
-void showDeck (Card *baralho) {
+void debugCard(Card *card) {
+    printf("\n----------\n");
+    showCard(card);
+    
+    if (card->next == NULL) {
+        printf("\nNext Card: NULL");
+    } else {
+        printf("Next Card: ");
+        showCard(card->next);
+    }
+    printf("\n----------\n");
+}
+
+void showDeckAll (Card *baralho) {
     Card *current = baralho;
 
     while (current != NULL) {
@@ -118,6 +131,19 @@ void showDeck (Card *baralho) {
     }
 }
 
+void showDeck (Card *baralho) {
+    Card *current = baralho;
+
+    while (current != NULL) {
+       showCard(current);
+       printf("\n");
+
+       current = current->next;
+    }
+}
+
+
+
 Card *pickById(Card **baralho, int id) {
 
     Card *card = *baralho;
@@ -125,7 +151,7 @@ Card *pickById(Card **baralho, int id) {
     while (card->id != id) {
         card = card->next;
     }
-
+    card->next->prev = card->prev;
     card->prev->next = card->next;
     return card;
 }
@@ -141,7 +167,7 @@ Card *pickLast(Card **baralho) {
 
     
     if (current->next == NULL) {
-        *baralho = NULL;  
+        *baralho = NULL; 
         return current;
     }
 
@@ -157,16 +183,23 @@ Card *pickLast(Card **baralho) {
 
 void insertLest(Card **baralho, Card *nCard) {
 
-    Card *card = *baralho;
+    if (*baralho == NULL) {
+        *baralho = nCard;
+        nCard->next = NULL;
+        nCard->prev = NULL;
+        return;
+    }
     
+    Card *card = *baralho;
     while (card->next != NULL) {
         card = card->next;
     }
 
     card->next = nCard;
     nCard->prev = card;
-    
+    nCard->next = NULL;
 }
+    
 
 int getSize (Card *baralho) {
     int index = 0;
