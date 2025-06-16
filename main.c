@@ -4,7 +4,7 @@
 
 int main () {
 
-    Card *baralho = NULL, *selectedHand = NULL;
+    Card *baralho = NULL, *selectedHand = NULL, *currentHand = NULL;
     int *poitns, *mult, *ypoints, *hands, *discarts;
 
     baralho = createDeck();
@@ -12,23 +12,16 @@ int main () {
 
     int handSize = 8;
 
-    Card *currentHand[handSize];
-    
-
-    for (int i = 0; i < 8; i++) {
-        currentHand[i] = pickLast(&baralho);
-        if (i == 0) {
-            currentHand[i]->prev = NULL;
-            currentHand[i]->next = NULL;
-        } else {
-            currentHand[i]->prev = currentHand[i-1];
-            currentHand[i]->prev->next = currentHand[i];
-        }
-        currentHand[i]->id = i + 1;
+    // Criar currentHand como lista ligada
+    for (int i = 0; i < handSize; i++) {
+        Card *newCard = pickLast(&baralho);
+        insertLast(&currentHand, newCard);
     }
+    idRegulator(&currentHand);
 
     // screen(currentHand, selectedHand);
-    while(1) {roundPlay(selectedHand, currentHand[0]);}
+    
+    while(1) {roundPlay(&selectedHand, &currentHand);}
     
     // showDeck(currentHand[0]);
     system("pause");

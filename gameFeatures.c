@@ -1,75 +1,82 @@
-#ifndef GAMEFEATURES_H
-#define GAMEFEATURES_H
 
 #include "gameFeatures.h"
 #include <stdio.h>
 
-void screen(Card *hand[], Card *selectedHand) {
+void screen(Card *currentHand, Card *selectedHand) {
     printf("--------------------------------------------------------\n");
     printf("|999| x |333|             52/52                    |3000|\n");
     printf("--------------------------------------------------------\n\n");
+
     printf("Sua jogada:\n\n");
     showDeck(selectedHand);
+    printf("\n");
+
     printf("Sua mao\n\n");
+    showDeck(currentHand);
 
-    showDeck(hand[0]);
-
-    printf("\n\n1: Modificar jogada\n");
-    printf("2: Confirmar jogada\n\n");
-}
-
-Card *modPlay (int opt, Card *selectedHand, Card *currentHand) {
-    //Selected hand == Sua jogada //Current hand == Sua mão
-    printf("Modplay iniciado\n"); //Debug
-    int id;
 
     
-    Card *currentCard;
-    switch (opt) {
-
-    case 1:
-        printf("Qual carta deseja selecionar?\n\n");
-        showDeck(currentHand);
-        printf("\n\nSelecione a carta digitando o id: ");
-        scanf("%i", &id);
-
-        printf("id da carta selecionada\n"); //Debug
-        Card *selectedCard = pickById(&currentHand, id);
-        printf("Carta pega\n"); //Debug
-        insertLest(&selectedHand, selectedCard);
-        printf("Carta inserida no final\n"); //Debug
-        idRegulator(&selectedHand);
-        idRegulator(&currentHand);
-        break;
-
-    case 2:
-        //Remover carta na mão jogada
-        break;
-    
-    default: printf("Opcao invalida");
-        break;
-    }
-
-    return selectedHand;
 }
 
-void roundPlay (Card *selectedHand, Card *currentHand) {
+void modPlay (Card **currentHand, Card **selectedHand) {
 
-    screen(&currentHand, selectedHand);
+    int opt, id;
+
+   printf("1-Adicionar carta\n2-Remover carta\n\nOpcao: ");
+   scanf("%d", &opt);
+
+   switch (opt) {
+        case 1 :
+            printf("Escolha uma carta para ser adicionada\n\n");
+            showDeck(*currentHand);    
+            printf("Selecione uma carta pelo id: ");
+            scanf("%i", &id);
+
+            
+            insertLast(selectedHand, pickById(currentHand, id));
+            idRegulator(currentHand);
+            idRegulator(selectedHand);
+            
+            showDeck(*selectedHand);
+            break;
+
+        case 2:
+            if(*selectedHand == NULL) {
+                printf("Impossivel remomer essa carta: baralho vazio\n");
+                system("pause");
+            } else {
+                printf("Escolha uma carta para ser REMOVIDA\n\n");
+                showDeck(*selectedHand);
+                printf("Selecione uma carta pelo id: ");
+                scanf("%i", &id);
+                insertLast(currentHand, pickById(selectedHand, id));
+                idRegulator(currentHand);
+                idRegulator(selectedHand);
+                
+            }
+            
+            
+            break;
+        
+        default:
+            break;
+        }
+}
+
+void roundPlay (Card **selectedHand, Card **currentHand) {
+
+    screen(*currentHand, *selectedHand);
 
     printf("Round play iniciado\n"); //Debug
 
     int opt;
-    int opt2;
+    printf("\n\n1: Modificar jogada\n");
+    printf("2: Confirmar jogada\n\n");
     scanf("%i", &opt);
     
-    switch (opt)
-    {
+    switch (opt) {
     case 1:
-        printf("1-Adicionar carta\n2-Remover carta\n\nOpcao: ");
-        scanf("%d", &opt2);
-        printf("Scan concludo\n"); //Debug
-        selectedHand = modPlay(opt2, selectedHand, currentHand);
+        modPlay(currentHand, selectedHand);
         break;
 
     case 2:
@@ -81,4 +88,28 @@ void roundPlay (Card *selectedHand, Card *currentHand) {
         break;
     }
 }
-#endif
+
+HandRank handRankChecker (Card *selectedHand) {
+    if (selectedHand) {
+        return;
+    }
+
+    int size = getSize(selectedHand);
+    Card *card1 = selectedHand;
+    
+    
+
+    for (int i = 0; i < size; i++) { 
+        for (int j = 0; j < size; j++) {
+
+            Card *card2 = selectedHand;
+            if (card1 == card2) {
+                card2 = card2->next;
+                continue;
+            }
+            
+            card2 = card2->next;
+        }
+        card1 = card1->next;
+    }
+}
