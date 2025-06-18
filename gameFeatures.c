@@ -2,19 +2,18 @@
 #include "gameFeatures.h"
 #include <stdio.h>
 
-void screen(Card *currentHand, Card *selectedHand) {
+void screen(Card *currentHand, Card *selectedHand, Card *baralho, int hands, int discart, int score, int multi, int actualBlind) {
     printf("--------------------------------------------------------\n");
-    printf("|999| x |333|             52/52                    |3000|\n");
-    printf("--------------------------------------------------------\n\n");
-
+    printf("|%03i| x |%03i|             %02i/52                    |%03i|\n", 
+    score, multi, getSize(baralho), actualBlind);
+    printf("--------------------------------------------------------\n");
+    printf("Maos: %02i | Descartes %02i\n\n", hands, discart);
     printf("Sua jogada:\n\n");
     showDeck(selectedHand);
     printf("\n");
 
     printf("Sua mao\n\n");
     showDeck(currentHand);
-
-
     
 }
 
@@ -63,11 +62,50 @@ void modPlay (Card **currentHand, Card **selectedHand) {
         }
 }
 
-void roundPlay (Card **selectedHand, Card **currentHand) {
+void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int hands, int discart, int score, int multi, int actualBlind) {
+    HandRank playedHand;
+    int size = 0;
 
-    screen(*currentHand, *selectedHand);
+    int opt;
+    printf("1-Jogar mao selecionada\n2-Descartar mao selecionada\n\nSelecione uma opcao: ");
+    scanf("%d", &opt);
 
-    printf("Round play iniciado\n"); //Debug
+    switch (opt)
+    {
+    case 1:
+        
+        break;
+
+    case 2:
+        system("cls");
+        if (discart == 0 || *selectedHand == NULL) {
+            printf("nao ha descartes restantes ou a mao esta vazia\n");
+            system("pause");
+            return;
+        } else {
+            system("cls");
+            clearDeck(selectedHand);
+            printf("Baralho descartado\n");
+            size = getSize(*selectedHand);
+            while (size - 1 > 8) {
+                insertLast(currentHand, pickLast(&baralho));
+            }
+            
+            discart--;
+            system("pause");
+        }
+        
+        break;
+    
+    default:
+        break;
+    }
+
+}
+
+void roundPlay (Card **selectedHand, Card **currentHand, Card *baralho, int hands, int discart, int score, int multi, int actualBlind) {
+
+    screen(*currentHand, *selectedHand, baralho, hands, discart, score, multi, actualBlind);
 
     int opt;
     printf("\n\n1: Modificar jogada\n");
@@ -75,12 +113,12 @@ void roundPlay (Card **selectedHand, Card **currentHand) {
     scanf("%i", &opt);
     
     switch (opt) {
-    case 1:
+    case 1: //modificar jogada
         modPlay(currentHand, selectedHand);
         break;
 
-    case 2:
-        
+    case 2: //confirmar jogada
+        confirmPlay(selectedHand, currentHand, baralho, hands, discart, score, multi, actualBlind);
         break;
     
     default:
@@ -89,27 +127,27 @@ void roundPlay (Card **selectedHand, Card **currentHand) {
     }
 }
 
-HandRank handRankChecker (Card *selectedHand) {
-    if (selectedHand) {
-        return;
-    }
+// HandRank handRankChecker (Card *selectedHand) {
+//     if (selectedHand) {
+//         return;
+//     }
 
-    int size = getSize(selectedHand);
-    Card *card1 = selectedHand;
+//     int size = getSize(selectedHand);
+//     Card *card1 = selectedHand;
     
     
 
-    for (int i = 0; i < size; i++) { 
-        for (int j = 0; j < size; j++) {
+//     for (int i = 0; i < size; i++) { 
+//         for (int j = 0; j < size; j++) {
 
-            Card *card2 = selectedHand;
-            if (card1 == card2) {
-                card2 = card2->next;
-                continue;
-            }
+//             Card *card2 = selectedHand;
+//             if (card1 == card2) {
+//                 card2 = card2->next;
+//                 continue;
+//             }
             
-            card2 = card2->next;
-        }
-        card1 = card1->next;
-    }
-}
+//             card2 = card2->next;
+//         }
+//         card1 = card1->next;
+//     }
+// }
