@@ -2,12 +2,12 @@
 #include "gameFeatures.h"
 #include <stdio.h>
 
-void screen(Card *currentHand, Card *selectedHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *actualBlind) {
+void screen(Card *currentHand, Card *selectedHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *actualBlind, int *chips) {
     printf("--------------------------------------------------------\n");
     printf("|%03i| x |%03i|             %02i/52                    |%03i|\n", 
-    *score, *multi, getSize(baralho), *actualBlind);
+    *chips, *multi, getSize(baralho), *actualBlind);
     printf("--------------------------------------------------------\n");
-    printf("Maos: %02i | Descartes %02i\n\n", *hands, *discart);
+    printf("Pontuacao atual: %03i\nMaos: %02i | Descartes %02i\n\n", *score, *hands, *discart);
     printf("Sua jogada:\n\n");
     showDeck(selectedHand);
     printf("\n");
@@ -17,8 +17,18 @@ void screen(Card *currentHand, Card *selectedHand, Card *baralho, int *hands, in
     
 }
 
-void modPlay (Card **currentHand, Card **selectedHand) {
+void scoreHand(Card *selectedHand, int *chips) {
 
+    Card *card = selectedHand;
+
+    while (card != NULL) {
+        chips += card->rank;
+        card = card->next;
+    }
+    
+}
+
+void modPlay (Card **currentHand, Card **selectedHand) {
     int opt, id;
 
    printf("1-Adicionar carta\n2-Remover carta\n\nOpcao: ");
@@ -72,17 +82,34 @@ void modPlay (Card **currentHand, Card **selectedHand) {
         }
 }
 
-void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *actualBlind) {
+void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *actualBlind, int *chips) {
     HandRank playedHand;
     int size = 0;
 
     int opt;
-    printf("1-Jogar mao selecionada\n2-Descartar mao selecionada\n\nSelecione uma opcao: ");
+    printf("1-Jogar mao selecionada\n2-Descartar mao selecionada\n\nSelecione uma opcao: ");    
     scanf("%d", &opt);
 
     switch (opt)
     {
     case 1:
+        if (selectedHand != NULL && *selectedHand != NULL) {
+        processHandModifiers(*selectedHand, chips, multi);
+        scoreHand(*selectedHand, chips);
+        clearDeck(selectedHand);
+
+        size = getSize(*currentHand);
+
+        while (size < 8) {
+                insertLast(currentHand, pickLast(&baralho));
+                size = getSize(*currentHand);
+        }
+        
+        *hands--;
+        } else {
+            printf("nao eh possivel jogar uma mao vazia");
+        }
+        
         
         break;
 
@@ -114,9 +141,9 @@ void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int *ha
 
 }
 
-void roundPlay (Card **selectedHand, Card **currentHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *actualBlind) {
+void roundPlay (Card **selectedHand, Card **currentHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *actualBlind, int *chips) {
 
-    screen(*currentHand, *selectedHand, baralho, hands, discart, score, multi, actualBlind);
+    screen(*currentHand, *selectedHand, baralho, hands, discart, score, multi, actualBlind, chips);
 
     int opt;
     printf("\n\n1: Modificar jogada\n");
@@ -129,7 +156,7 @@ void roundPlay (Card **selectedHand, Card **currentHand, Card *baralho, int *han
         break;
 
     case 2: //confirmar jogada
-        confirmPlay(selectedHand, currentHand, baralho, hands, discart, score, multi, actualBlind);
+        confirmPlay(selectedHand, currentHand, baralho, hands, discart, score, multi, actualBlind, chips);
         break;
     
     default:
@@ -138,27 +165,3 @@ void roundPlay (Card **selectedHand, Card **currentHand, Card *baralho, int *han
     }
 }
 
-// HandRank handRankChecker (Card *selectedHand) {
-//     if (selectedHand) {
-//         return;
-//     }
-
-//     int size = getSize(selectedHand);
-//     Card *card1 = selectedHand;
-    
-    
-
-//     for (int i = 0; i < size; i++) { 
-//         for (int j = 0; j < size; j++) {
-
-//             Card *card2 = selectedHand;
-//             if (card1 == card2) {
-//                 card2 = card2->next;
-//                 continue;
-//             }
-            
-//             card2 = card2->next;
-//         }
-//         card1 = card1->next;
-//     }
-// }

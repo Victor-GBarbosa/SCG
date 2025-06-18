@@ -4,3 +4,7 @@ notMain.c
 *.exe
 *.exe
 *.exe
+*.exe
+/.vscode
+tests.h
+tests.c
