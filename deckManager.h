@@ -1,3 +1,6 @@
+#ifndef DECKMANAGER_H
+#define DECKMANAGER_H
+
 #include <stdlib.h>
 
 
@@ -36,13 +39,17 @@ typedef struct Card{
 } Card;
 
 Card *createDeck ();
+void clearDeck(Card **baralho);
 void showCard(Card *card);
 void debugCard(Card *card);
 void showDeck (Card *baralho);
 void showDeckAll (Card *baralho);
 Card *pickById(Card **baralho, int id);
+void removeById(Card **baralho, int id);
 Card *pickLast(Card **baralho);
-void insertLest(Card **baralho, Card *nCard);
+void insertLast(Card **baralho, Card *nCard);
 int getSize (Card *baralho);
 void shuffle (Card **baralho_ptr);
 void idRegulator(Card **baralho);
+
+#endif

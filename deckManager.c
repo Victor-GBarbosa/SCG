@@ -1,5 +1,4 @@
-#ifndef DECKMANAGER_H
-#define DECKMANAGER_H
+
 
 #include "deckManager.h"
 #include <stdio.h>
@@ -147,13 +146,43 @@ void showDeck (Card *baralho) {
 Card *pickById(Card **baralho, int id) {
 
     Card *card = *baralho;
+    int size = getSize(*baralho);
+
+    printf("Size: %i\n", size); //debug
+
+    if(id > size - 1  || id < 0) {
+        printf("id nao encontrado no baralho");
+        return NULL;
+    }
 
     while (card->id != id) {
         card = card->next;
     }
-    card->next->prev = card->prev;
-    card->prev->next = card->next;
+
+    if (card->prev == NULL) {
+
+        *baralho = card->next;
+        if (card->next != NULL) {
+            card->next->prev = NULL;
+        }
+    } else if (card->next == NULL) {
+        card->prev->next = NULL;
+    } else {
+        card->next->prev = card->prev;
+        card->prev->next = card->next;
+    }
+
+    card->next = NULL;
+    card->prev = NULL;
+    
     return card;
+}
+
+void removeById(Card **baralho, int id) {
+    Card *carta = pickById(baralho, id);
+    if (carta != NULL) {
+        free(carta);  // Libera a memória automaticamente
+    }
 }
 
 
@@ -181,9 +210,14 @@ Card *pickLast(Card **baralho) {
     return current;
 }
 
-void insertLest(Card **baralho, Card *nCard) {
+void insertLast(Card **baralho, Card *nCard) {
 
-    if (*baralho == NULL) {
+    if (nCard == NULL){
+        return;
+    }
+    
+
+    if (baralho == NULL || *baralho == NULL) {
         *baralho = nCard;
         nCard->next = NULL;
         nCard->prev = NULL;
@@ -265,5 +299,21 @@ void shuffle (Card **baralho_ptr) {
         }
 }
 
+void clearDeck(Card **baralho) {
+    if (baralho == NULL || *baralho == NULL) {
+        return;
+    }
+    
+    Card *current = *baralho;
+    Card *next;
+    
+    while (current != NULL) {
+        next = current->next;  // Salva a próxima carta antes de liberar
+        free(current);         // Libera a carta atual
+        current = next;        // Move para a próxima
+    }
+    
+    *baralho = NULL;  // Define o ponteiro como NULL (lista vazia)
+}
 
-#endif
+

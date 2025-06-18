@@ -4,31 +4,22 @@
 
 int main () {
 
-    Card *baralho = NULL, *selectedHand = NULL;
-    int *poitns, *mult, *ypoints, *hands, *discarts;
+    Card *baralho = NULL, *selectedHand = NULL, *currentHand = NULL;
+    int actualBlind = 300, multi = 0, score = 0, hands = 4, discarts = 4;
 
     baralho = createDeck();
     shuffle(&baralho);
 
     int handSize = 8;
 
-    Card *currentHand[handSize];
+    // Criar currentHand como lista ligada
+    for (int i = 0; i < handSize; i++) {
+        Card *newCard = pickLast(&baralho);
+        insertLast(&currentHand, newCard);
+    }    
+      idRegulator(&currentHand);    // screen(currentHand, selectedHand, baralho, &hands, &discarts, &score, &multi, &actualBlind);
     
-
-    for (int i = 0; i < 8; i++) {
-        currentHand[i] = pickLast(&baralho);
-        if (i == 0) {
-            currentHand[i]->prev = NULL;
-            currentHand[i]->next = NULL;
-        } else {
-            currentHand[i]->prev = currentHand[i-1];
-            currentHand[i]->prev->next = currentHand[i];
-        }
-        currentHand[i]->id = i + 1;
-    }
-
-    // screen(currentHand, selectedHand);
-    while(1) {roundPlay(selectedHand, currentHand[0]);}
+    while(1) {roundPlay(&selectedHand, &currentHand, baralho, &hands, &discarts, &score, &multi, &actualBlind);}
     
     // showDeck(currentHand[0]);
     system("pause");
