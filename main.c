@@ -17,10 +17,9 @@ int main () {
         Card *newCard = pickLast(&baralho);
         insertLast(&currentHand, newCard);
     }    
+      idRegulator(&currentHand);    // screen(currentHand, selectedHand, baralho, &hands, &discarts, &score, &multi, &actualBlind);
     
-    idRegulator(&currentHand);    // screen(currentHand, selectedHand, baralho, hands, discarts, score, multi, actualBlind);
-    
-    while(1) {roundPlay(&selectedHand, &currentHand, baralho, hands, discarts, score, multi, actualBlind);}
+    while(1) {roundPlay(&selectedHand, &currentHand, baralho, &hands, &discarts, &score, &multi, &actualBlind);}
     
     // showDeck(currentHand[0]);
     system("pause");

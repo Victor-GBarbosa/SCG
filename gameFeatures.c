@@ -2,12 +2,12 @@
 #include "gameFeatures.h"
 #include <stdio.h>
 
-void screen(Card *currentHand, Card *selectedHand, Card *baralho, int hands, int discart, int score, int multi, int actualBlind) {
+void screen(Card *currentHand, Card *selectedHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *actualBlind) {
     printf("--------------------------------------------------------\n");
     printf("|%03i| x |%03i|             %02i/52                    |%03i|\n", 
-    score, multi, getSize(baralho), actualBlind);
+    *score, *multi, getSize(baralho), *actualBlind);
     printf("--------------------------------------------------------\n");
-    printf("Maos: %02i | Descartes %02i\n\n", hands, discart);
+    printf("Maos: %02i | Descartes %02i\n\n", *hands, *discart);
     printf("Sua jogada:\n\n");
     showDeck(selectedHand);
     printf("\n");
@@ -26,6 +26,8 @@ void modPlay (Card **currentHand, Card **selectedHand) {
 
    switch (opt) {
         case 1 :
+        if (getSize(*selectedHand) < 5)
+        {
             printf("Escolha uma carta para ser adicionada\n\n");
             showDeck(*currentHand);    
             printf("Selecione uma carta pelo id: ");
@@ -38,6 +40,14 @@ void modPlay (Card **currentHand, Card **selectedHand) {
             
             showDeck(*selectedHand);
             break;
+        } else {
+            system("cls");
+            printf("Limite de 5 cartas atingido\n");
+            system("pause");
+            break;
+        }
+        
+
 
         case 2:
             if(*selectedHand == NULL) {
@@ -62,7 +72,7 @@ void modPlay (Card **currentHand, Card **selectedHand) {
         }
 }
 
-void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int hands, int discart, int score, int multi, int actualBlind) {
+void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *actualBlind) {
     HandRank playedHand;
     int size = 0;
 
@@ -78,7 +88,7 @@ void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int han
 
     case 2:
         system("cls");
-        if (discart == 0 || *selectedHand == NULL) {
+        if (*discart == 0 || *selectedHand == NULL) {
             printf("nao ha descartes restantes ou a mao esta vazia\n");
             system("pause");
             return;
@@ -86,12 +96,13 @@ void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int han
             system("cls");
             clearDeck(selectedHand);
             printf("Baralho descartado\n");
-            size = getSize(*selectedHand);
-            while (size - 1 > 8) {
+            size = getSize(*currentHand);
+            while (size < 8) {
                 insertLast(currentHand, pickLast(&baralho));
+                size = getSize(*currentHand);
             }
-            
-            discart--;
+            idRegulator(currentHand);
+            (*discart)--;
             system("pause");
         }
         
@@ -103,7 +114,7 @@ void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int han
 
 }
 
-void roundPlay (Card **selectedHand, Card **currentHand, Card *baralho, int hands, int discart, int score, int multi, int actualBlind) {
+void roundPlay (Card **selectedHand, Card **currentHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *actualBlind) {
 
     screen(*currentHand, *selectedHand, baralho, hands, discart, score, multi, actualBlind);
 
