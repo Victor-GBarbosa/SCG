@@ -2,21 +2,51 @@
 #include <stdlib.h>
 #include "gameFeatures.h"
 
-#define INITIAL_BLIND 300
+#define INITIAL_BLIND 50
 
 int main () {    Card *baralho = NULL, *selectedHand = NULL, *currentHand = NULL; //estruturas do baralho
     
     int currentBlind = INITIAL_BLIND, multi = 0, score = 0, hands = 4, discarts = 4, chips = 0; //variaveis de gameplay
     int roundWin = 0; //identificador de vitoria
+    int round = 0;
+    char currentSave[256] = ""; // String para armazenar o save atual
 
-    int handSize = 8;  
-     
-    //carregar aqui
+    int handSize = 8;
+    int menuOpt;
+    
+    // Menu inicial
+    system("cls");
+    printf("=== SIMPLE CARD GAME ===\n\n");
+    printf("1. Novo Jogo\n");
+    printf("2. Carregar Jogo\n");
+    printf("\nEscolha uma opcao: ");
+    scanf("%d", &menuOpt);
+    
+    switch(menuOpt) {
+        case 1:
+            printf("Iniciando novo jogo...\n");
+            break;        case 2:
+            if (loadGame(&round, &currentBlind, currentSave)) { 
+                printf("Jogo carregado! Continuando do round %d...\n", round);
+                system("pause");
+            } else {
+                printf("Falha ao carregar. Iniciando novo jogo...\n");
+                round = 0;
+                currentBlind = INITIAL_BLIND;
+                system("pause");
+            }
+            break;
+        default:
+            printf("Opcao invalida. Iniciando novo jogo...\n");
+            system("pause");
+            break;
+    }
+    
     do {
 
         baralho = createDeck();
         shuffle(&baralho);
-        //criar currentHand como lista ligada
+
         for (int i = 0; i < handSize; i++) {
             Card *newCard = pickLast(&baralho);
             insertLast(&currentHand, newCard);
@@ -26,16 +56,19 @@ int main () {    Card *baralho = NULL, *selectedHand = NULL, *currentHand = NULL
 
 
         while(roundWin == 0) {
-            if (hands > 0) {
+            if (hands > 0 && (getSize(baralho) > 0 || (getSize(currentHand) > 0 || getSize(selectedHand) > 0))) {
                 system("cls");
                 roundPlay(&selectedHand, &currentHand, baralho, &hands, &discarts, &score, &multi, &currentBlind, &chips);
                 score += chips * multi;
+                
                 if (score >= currentBlind) { //caso tenha ganhado o round
                     roundWin = 1;
+                    round++; // Increment round counter
                     system("cls");
-                    printf("Parabens!!\n\nVoce ganhou o round com %i pontos\n%i Pontos cima da puntuacao necessaria\n", score, score - currentBlind);
-                    system("pause");
-                    currentBlind = currentBlind + (currentBlind * 0.25);
+                    printf("Parabens!!\n\nVoce ganhou o round %d com %i pontos\n%i Pontos cima da puntuacao necessaria\n", round, score, score - currentBlind);
+                    system("pause");                    currentBlind = currentBlind + (currentBlind * 0.25);
+                    //salvar aqui
+                    saveGame(round, currentBlind, currentSave);
                     break;
                 } else { //não tenha ganhado o round, mas ainda tenha mão
                     multi = 0;

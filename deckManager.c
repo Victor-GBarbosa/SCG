@@ -16,7 +16,7 @@ Card *createDeck () {
             Card *newCard = (Card*)malloc(sizeof(Card));
             newCard->naipe = j;
             newCard->rank = i;
-            newCard->stamp = 0;
+            // newCard->stamp = 0; //não implementado 
             newCard->id = index;
 
             newCard->next = NULL;

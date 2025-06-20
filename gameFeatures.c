@@ -1,6 +1,8 @@
 
 #include "gameFeatures.h"
 #include <stdio.h>
+#include <time.h>
+#include <string.h>
 
 void screen(Card *currentHand, Card *selectedHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *currentBlind, int *chips) {
     system("cls");
@@ -13,7 +15,7 @@ void screen(Card *currentHand, Card *selectedHand, Card *baralho, int *hands, in
     showDeck(selectedHand);
     printf("\n");
 
-    printf("Sua mao\n\n");
+    printf("Sua mao:\n\n");
     showDeck(currentHand);
     
 }
@@ -162,3 +164,191 @@ void roundPlay (Card **selectedHand, Card **currentHand, Card *baralho, int *han
         break;
     }
 }
+
+//salvar e carregar arquivos do jogo ------------------------------------------------------------------------
+
+int countSaves() {
+    FILE *fp;
+    char line[256];
+    int count = 0;
+    
+    fp = fopen("save.txt", "r");
+    if (fp == NULL) {
+        return 0;
+    }
+    
+    while (fgets(line, sizeof(line), fp)) {
+        if (strlen(line) > 1) { // Linha não vazia
+            count++;
+        }
+    }
+    fclose(fp);
+    return count;
+}
+
+int validateSave(char *saveLine) {
+    char dateString[20];
+    int round, currentBlind;
+    
+    if (sscanf(saveLine, "%s %d %d", dateString, &round, &currentBlind) == 3) {
+        if (round >= 0 && currentBlind > 0) {
+            return 1;
+        }
+    }
+    return 0;
+}
+
+void saveGame(int round, int currentBlind, char *currentSave) {
+    FILE *fp;
+    time_t rawtime;
+    struct tm *timeinfo;
+    char newSave[256];
+
+    time(&rawtime);
+    timeinfo = localtime(&rawtime);
+    
+
+    sprintf(newSave, "%02d/%02d/%04d-%02d:%02d:%02d %d %d",
+            timeinfo->tm_mday,
+            timeinfo->tm_mon + 1,
+            timeinfo->tm_year + 1900,
+            timeinfo->tm_hour,
+            timeinfo->tm_min,
+            timeinfo->tm_sec,
+            round,
+            currentBlind);
+    
+
+    if (strlen(currentSave) > 0) {
+        FILE *tempFp;
+        char line[256];
+        char saves[MAX_SAVES][256];
+        int saveCount = 0;
+        int found = 0;
+        
+
+        fp = fopen("save.txt", "r");
+        if (fp != NULL) {
+            while (fgets(line, sizeof(line), fp) && saveCount < MAX_SAVES) {
+                line[strcspn(line, "\n")] = 0; // Remove \n
+                if (strlen(line) > 0) {
+                    if (strcmp(line, currentSave) == 0) {
+                        strcpy(saves[saveCount], newSave);
+                        found = 1;
+                    } else {
+                        strcpy(saves[saveCount], line);
+                    }
+                    saveCount++;
+                }
+            }
+            fclose(fp);
+        }
+        
+        if (!found) {
+            
+            if (saveCount < MAX_SAVES) {
+                strcpy(saves[saveCount], newSave);
+                saveCount++;
+            } else {
+                printf("Limite de saves atingido (%d). Não foi possível salvar.\n", MAX_SAVES);
+                return;
+            }
+        }
+
+        fp = fopen("save.txt", "w");
+        if (fp == NULL) {
+            printf("Erro: Nao foi possivel atualizar o arquivo de salvamento!\n");
+            return;
+        }
+        
+        for (int i = 0; i < saveCount; i++) {
+            fprintf(fp, "%s\n", saves[i]);
+        }
+        fclose(fp);
+        
+        strcpy(currentSave, newSave);
+        
+    } else {
+
+        if (countSaves() >= MAX_SAVES) {
+            printf("Limite de saves atingido (%d). Não foi possível salvar.\n", MAX_SAVES);
+            return;
+        }
+        
+        fp = fopen("save.txt", "a");
+        if (fp == NULL) {
+            printf("Erro: Nao foi possivel criar o arquivo de salvamento!\n");
+            return;
+        }
+        
+        fprintf(fp, "%s\n", newSave);
+        fclose(fp);
+        
+        
+        strcpy(currentSave, newSave);
+    }
+    
+    printf("Jogo salvo com sucesso!\n");
+}
+
+int loadGame(int *round, int *currentBlind, char *currentSave) {
+    FILE *fp;
+    char line[256];
+    char saves[MAX_SAVES][256];
+    int saveCount = 0;
+    int choice;
+    
+    fp = fopen("save.txt", "r");
+    if (fp == NULL) {
+        printf("Erro: Arquivo de salvamento nao encontrado!\n");
+        return 0; 
+    }
+    
+    printf("\n=== SAVES DISPONIVEIS ===\n\n");
+    while (fgets(line, sizeof(line), fp) && saveCount < MAX_SAVES) {
+        line[strcspn(line, "\n")] = 0;
+        
+        if (strlen(line) > 0 && validateSave(line)) { 
+            strcpy(saves[saveCount], line);
+            printf("%d. %s\n", saveCount + 1, line);
+            saveCount++;
+        }
+    }
+    fclose(fp);
+    
+    if (saveCount == 0) {
+        printf("Nenhum save valido encontrado!\n");
+        return 0;
+    }
+    
+    printf("\nEscolha um save (1-%d) ou 0 para cancelar: ", saveCount);
+    scanf("%d", &choice);
+    
+    if (choice < 1 || choice > saveCount) {
+        printf("Escolha cancelada.\n");
+        return 0;
+    }
+    
+    char dateString[20];
+    int loadedRound, loadedBlind;
+    
+    if (sscanf(saves[choice - 1], "%s %d %d", dateString, &loadedRound, &loadedBlind) == 3) {
+        *round = loadedRound;
+        *currentBlind = loadedBlind;
+        
+        strcpy(currentSave, saves[choice - 1]);
+        
+        printf("\nSave carregado com sucesso!\n");
+        printf("Data: %s\n", dateString);
+        printf("Round: %d\n", *round);
+        printf("Current Blind: %d\n", *currentBlind);
+        system("pause");
+        
+        return 1;
+    } else {
+        printf("Erro: Formato de save invalido!\n");
+        return 0;
+    }
+}
+
+
