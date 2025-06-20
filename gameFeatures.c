@@ -8,7 +8,7 @@ void screen(Card *currentHand, Card *selectedHand, Card *baralho, int *hands, in
     printf("|%03i| x |%03i|             %02i/52                    |%03i|\n", 
     *chips, *multi, getSize(baralho), *currentBlind);
     printf("--------------------------------------------------------\n");
-    printf("Maos: %02i | Descartes %02i\n\n", *hands, *discart);
+    printf("Pontuacao atual: %03i\nMaos: %02i | Descartes %02i\n\n", *score, *hands, *discart);
     printf("Sua jogada:\n\n");
     showDeck(selectedHand);
     printf("\n");
@@ -31,7 +31,6 @@ void scoreHand(Card *currentHand, Card *selectedHand, Card *baralho, int *hands,
 }
 
 void modPlay (Card **currentHand, Card **selectedHand) {
-
     int opt, id;
 
    printf("1-Adicionar carta\n2-Remover carta\n\nOpcao: ");
@@ -88,7 +87,7 @@ void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int *ha
     int size = 0;
 
     int opt;
-    printf("1-Jogar mao selecionada\n2-Descartar mao selecionada\n\nSelecione uma opcao: ");
+    printf("1-Jogar mao selecionada\n2-Descartar mao selecionada\n\nSelecione uma opcao: ");    
     scanf("%d", &opt);
 
     switch (opt) {

@@ -3,6 +3,7 @@
 
 
 #include "deckManager.h"
+#include "pokerHands.h"
 
 void screen(Card *currentHand, Card *selectedHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *currentBlind, int *chips);
 void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *currentBlind, int *chips);
