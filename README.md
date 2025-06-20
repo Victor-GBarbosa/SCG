@@ -1,4 +1,4 @@
- Como iniciar ⏯️ 
+# Como iniciar ⏯️ 
 
 Com o projeto baixado, vá à pasta e abra no VScode.  
 Caso seu sistema operacional não seja Windows, abra a pasta Linux no projeto e continue o passo a passo por lá. Caso seja Windows, fique na pasta raiz do projeto.
