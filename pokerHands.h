@@ -1,3 +1,6 @@
+#ifndef POKERHANDS_H
+#define POKERHANDS_H
+
 #include "deckManager.h"
 
 HandRank handRankChecker(Card *selectedHand);
@@ -12,3 +15,5 @@ int isPair(int rankCount[]);
 void sortArray(int arr[], int size);
 
 void processHandModifiers(Card *selectedHand, int *chips, int *multi);
+
+#endif

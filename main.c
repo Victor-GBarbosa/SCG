@@ -2,9 +2,11 @@
 #include <stdlib.h>
 #include "gameFeatures.h"
 
-#define INITIAL_BLIND 50
+#define INITIAL_BLIND 300
 
-int main () {    Card *baralho = NULL, *selectedHand = NULL, *currentHand = NULL; //estruturas do baralho
+int main () {    
+    
+    Card *baralho = NULL, *selectedHand = NULL, *currentHand = NULL; //estruturas do baralho
     
     int currentBlind = INITIAL_BLIND, multi = 0, score = 0, hands = 4, discarts = 4, chips = 0; //variaveis de gameplay
     int roundWin = 0; //identificador de vitoria
@@ -93,8 +95,4 @@ int main () {    Card *baralho = NULL, *selectedHand = NULL, *currentHand = NULL
         clearDeck(&currentHand);
         clearDeck(&selectedHand);
     } while(1);
-
-    free(baralho);
-    free(currentHand);
-    free(selectedHand);
 } //main final

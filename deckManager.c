@@ -1,8 +1,7 @@
-
-
 #include "deckManager.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 Card *createDeck () {
     Card *head = NULL;
@@ -260,12 +259,13 @@ void idRegulator(Card **baralho) {
 
 void shuffle (Card **baralho_ptr) {
 
+    srand(time(NULL));   
+    
     if (baralho_ptr == NULL || *baralho_ptr == NULL) {
         return;
     }
 
-    Card *baralho = malloc(sizeof(Card));
-    baralho = *baralho_ptr;
+    Card *baralho = *baralho_ptr;
 
     int size = getSize(baralho);
 
