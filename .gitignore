@@ -4,3 +4,5 @@ notMain.c
 *.exe
 *.exe
 *.exe
+tests.h
+tests.c
