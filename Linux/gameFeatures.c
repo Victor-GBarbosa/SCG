@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <time.h>
 #include <string.h>
-#include <windows.h>
 
 void screen(Card *currentHand, Card *selectedHand, Card *baralho, int *hands, int *discart, int *score, int *multi, int *currentBlind, int *chips) {
     system("cls");
@@ -29,9 +28,8 @@ void scoreHand(Card *currentHand, Card *selectedHand, Card *baralho, int *hands,
         screen(currentHand, selectedHand, baralho, hands, discart, score, multi, currentBlind, chips);
         *chips += card->rank;
         card = card->next;
-        Sleep(1000);
     }
-    Sleep(1000);
+    
 }
 
 void modPlay (Card **currentHand, Card **selectedHand) {
@@ -99,7 +97,6 @@ void confirmPlay(Card **selectedHand, Card **currentHand, Card *baralho, int *ha
 
             if (selectedHand != NULL && *selectedHand != NULL) {
             processHandModifiers(*selectedHand, chips, multi);
-            Sleep(1000);
             scoreHand(*currentHand, *selectedHand, baralho, hands, discart, score, multi, currentBlind, chips);
             clearDeck(selectedHand);
 
